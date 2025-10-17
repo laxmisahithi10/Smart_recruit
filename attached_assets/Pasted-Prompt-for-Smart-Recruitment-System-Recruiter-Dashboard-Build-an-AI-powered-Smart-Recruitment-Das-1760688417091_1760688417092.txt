@@ -1,0 +1,117 @@
+Prompt for Smart Recruitment System (Recruiter Dashboard)
+
+Build an AI-powered Smart Recruitment Dashboard for recruiters, integrating intelligent automation, bias detection, and data-driven insights — simplifying hiring decisions through a single unified dashboard.
+
+🏠 Home / Dashboard Page
+
+Clean, professional recruiter dashboard UI.
+
+A floating AI Avatar Assistant (bottom-right corner) acts as an interactive HR chatbot.
+
+Schedules interviews automatically by generating Google Meet/Zoom links.
+
+Emails the meeting link and details to shortlisted candidates.
+
+Can handle recruiter queries like:
+
+“Schedule interviews for top 3 Java developers.”
+
+“Show top performers based on last interview.”
+
+Manages notifications, reminders, and interview timelines.
+
+Provides voice + text chat interface for smooth interaction.
+
+📊 Charts & Analytics (Agenda) Section
+
+Central workspace where recruiters upload candidate data (CSV) exported from a shared Excel sheet filled by applicants.
+
+The system performs AI-based analysis of candidates:
+
+Parses and extracts candidate skills, experience, and education.
+
+Displays data visualizations — skill radar charts, bar graphs, pie charts, etc.
+
+Allows recruiters to compare multiple applicants visually.
+
+Fairness & Bias Detection:
+
+Analyzes uploaded Job Descriptions (JDs) and scoring patterns.
+
+Detects potential bias indicators like:
+
+“JD may discourage female applicants – uses ‘aggressive’ frequently.”
+
+“Possible bias detected — candidate has same surname as recruiter.”
+
+Displays a Fairness Score and suggests inclusive alternatives.
+
+🎥 AI-Driven Interview Module
+
+AI Avatar automates the entire interview process:
+
+Creates and shares meeting links via email and calendar integration.
+
+Starts the interview session when candidate joins.
+
+During the interview:
+
+Adaptive Question Generator:
+
+Adjusts difficulty and topics dynamically based on candidate confidence and tone.
+
+Emotion & Behaviour Analyzer:
+
+Reads facial expressions and vocal cues to measure nervousness or confidence.
+
+AI modulates question complexity accordingly.
+
+Proctoring System:
+
+Detects multiple faces, off-screen movement, or background noises.
+
+Flags suspicious activity in real time.
+
+🧠 Post-Interview Review & Analysis
+
+Once the interview ends, AI generates a comprehensive performance review for each candidate:
+
+Candidate Report:
+
+Confidence, Communication, Technical Accuracy, Problem-Solving.
+
+Pros and Cons:
+
+✅ Strong analytical skills
+
+⚠️ Needs improvement in leadership and collaboration
+
+Overall Interview Score (out of 100).
+
+Comparative Candidate Charts:
+
+Side-by-side visual comparison of shortlisted applicants.
+
+AI Recommendation:
+
+“Candidate A is the best fit based on performance and JD alignment.”
+
+🧩 Additional Features
+
+Downloadable performance summaries (PDF/CSV).
+
+Timeline view of all scheduled and completed interviews.
+
+Secure cloud storage for recordings and reports.
+
+⚙️ Tech Stack
+
+Frontend: React + Tailwind CSS + Chart.js + Framer Motion
+
+Backend: Node.js / Express + Python (Flask/FastAPI for AI models)
+
+Database: Firebase / MongoDB
+
+AI Tools: OpenAI API, Hugging Face (for NLP, bias detection, emotion analysis)
+
+APIs: Google Meet, Gmail, Calendar integrations
