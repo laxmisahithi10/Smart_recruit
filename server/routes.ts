@@ -281,11 +281,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         candidateName: candidate.name,
         position: candidate.position,
         scheduledDate: new Date(scheduledDate),
-        meetingLink: calendarEvent.meetLink,
+        meetingLink: calendarEvent?.meetLink || null,
         status: "scheduled",
         interviewData: {
-          calendarEventId: calendarEvent.eventId,
-          calendarLink: calendarEvent.calendarLink
+          calendarEventId: calendarEvent?.eventId || null,
+          calendarLink: calendarEvent?.calendarLink || null
         },
         confidenceScore: null,
         communicationScore: null,
@@ -301,22 +301,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Send email notification with calendar details
-      const emailOptions = generateInterviewEmail(
-        candidate.name,
-        candidate.position,
-        calendarEvent.meetLink,
-        new Date(scheduledDate)
-      );
-      emailOptions.to = candidate.email;
-      await sendEmail(emailOptions);
+      if (calendarEvent?.meetLink) {
+        const emailOptions = generateInterviewEmail(
+          candidate.name,
+          candidate.position,
+          calendarEvent.meetLink,
+          new Date(scheduledDate)
+        );
+        emailOptions.to = candidate.email;
+        await sendEmail(emailOptions);
+      }
 
       res.status(201).json({
         ...interview,
-        calendarLink: calendarEvent.calendarLink
+        calendarLink: calendarEvent?.calendarLink || null
       });
     } catch (error) {
       console.error("Interview scheduling error:", error);
-      res.status(500).json({ error: "Failed to schedule interview" });
+      res.status(500).json({ 
+        error: "Failed to schedule interview",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 
@@ -334,7 +339,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Return the meeting URL
       res.json({
-        meetUrl: interview.meetingLink,
+        meetUrl: interview.meetingLink || null,
         interview: updated
       });
     } catch (error) {
@@ -554,7 +559,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ authUrl });
     } catch (error) {
       console.error('Google auth URL error:', error);
-      res.status(500).json({ error: "Failed to generate auth URL", details: error.message });
+      res.status(500).json({ 
+        error: "Failed to generate auth URL", 
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 
@@ -573,7 +581,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Google OAuth error:", error);
-      res.status(500).json({ error: "Failed to authenticate with Google" });
+      res.status(500).json({ 
+        error: "Failed to authenticate with Google",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 

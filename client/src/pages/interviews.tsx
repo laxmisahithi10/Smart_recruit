@@ -40,7 +40,6 @@ export default function Interviews() {
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState("");
   const [scheduledDate, setScheduledDate] = useState("");
-  const [selectedInterview, setSelectedInterview] = useState<Interview | null>(null);
 
   const { data: interviews = [], isLoading: loadingInterviews } = useQuery<Interview[]>({
     queryKey: ["/api/interviews"],
@@ -52,7 +51,8 @@ export default function Interviews() {
 
   const scheduleInterviewMutation = useMutation({
     mutationFn: async (data: { candidateId: string; scheduledDate: string }) => {
-      return apiRequest("POST", "/api/interviews/schedule", data);
+      const res = await apiRequest("POST", "/api/interviews/schedule", data);
+      return await res.json();
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/interviews"] });
@@ -61,9 +61,16 @@ export default function Interviews() {
       setScheduledDate("");
       toast({
         title: "Success",
-        description: data.calendarLink ? 
+        description: data?.calendarLink ?
           "Interview scheduled with Google Calendar event and email sent to candidate" :
           "Interview scheduled and email sent to candidate",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to schedule interview",
+        variant: "destructive",
       });
     },
   });
@@ -71,12 +78,9 @@ export default function Interviews() {
   const joinInterviewMutation = useMutation({
     mutationFn: async (interviewId: string) => {
       const response = await apiRequest("POST", `/api/interviews/${interviewId}/join`);
-      return response;
+      return await response.json();
     },
     onSuccess: (data) => {
-      console.log('Join interview response:', data);
-      
-      // Redirect to Google Meet
       if (data.meetUrl) {
         window.open(data.meetUrl, '_blank');
         toast({
@@ -89,12 +93,10 @@ export default function Interviews() {
           description: "Interview status updated to in progress.",
         });
       }
-      
-      // Update interview status
+
       queryClient.invalidateQueries({ queryKey: ["/api/interviews"] });
     },
-    onError: (error) => {
-      console.error('Join interview error:', error);
+    onError: () => {
       toast({
         title: "Error",
         description: "Failed to join interview",
@@ -261,11 +263,11 @@ export default function Interviews() {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        {interview.interviewData?.calendarLink && (
+                        {(interview.interviewData as any)?.calendarLink && (
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => window.open(interview.interviewData.calendarLink, '_blank')}
+                            onClick={() => window.open((interview.interviewData as any).calendarLink, '_blank')}
                           >
                             <Calendar className="h-3 w-3 mr-1" />
                             Calendar
@@ -363,7 +365,7 @@ export default function Interviews() {
                       </div>
 
                       {/* Performance Metrics */}
-                      {(interview.confidenceScore !== null || interview.communicationScore !== null) && (
+                      {(interview.confidenceScore !== null || interview.communicationScore !== null || interview.technicalScore !== null || interview.problemSolvingScore !== null) && (
                         <div className="grid grid-cols-2 gap-4">
                           {interview.confidenceScore !== null && (
                             <div>
