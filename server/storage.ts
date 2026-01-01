@@ -68,7 +68,16 @@ export class MemStorage implements IStorage {
   async createCandidate(insertCandidate: InsertCandidate): Promise<Candidate> {
     const id = randomUUID();
     const candidate: Candidate = {
-      ...insertCandidate,
+      name: insertCandidate.name,
+      email: insertCandidate.email,
+      position: insertCandidate.position,
+      phone: insertCandidate.phone || null,
+      skills: insertCandidate.skills || [],
+      experience: insertCandidate.experience || 0,
+      education: insertCandidate.education || null,
+      resumeData: insertCandidate.resumeData || null,
+      overallScore: insertCandidate.overallScore || null,
+      status: insertCandidate.status || "applied",
       id,
       appliedDate: new Date(),
     };
@@ -107,7 +116,24 @@ export class MemStorage implements IStorage {
   async createInterview(insertInterview: InsertInterview): Promise<Interview> {
     const id = randomUUID();
     const interview: Interview = {
-      ...insertInterview,
+      candidateId: insertInterview.candidateId,
+      candidateName: insertInterview.candidateName,
+      position: insertInterview.position,
+      scheduledDate: insertInterview.scheduledDate || null,
+      meetingLink: insertInterview.meetingLink || null,
+      status: insertInterview.status || "scheduled",
+      interviewData: insertInterview.interviewData || null,
+      confidenceScore: insertInterview.confidenceScore || null,
+      communicationScore: insertInterview.communicationScore || null,
+      technicalScore: insertInterview.technicalScore || null,
+      problemSolvingScore: insertInterview.problemSolvingScore || null,
+      overallScore: insertInterview.overallScore || null,
+      emotionAnalysis: insertInterview.emotionAnalysis || null,
+      pros: insertInterview.pros || null,
+      cons: insertInterview.cons || null,
+      aiRecommendation: insertInterview.aiRecommendation || null,
+      proctorAlerts: insertInterview.proctorAlerts || null,
+      completedDate: insertInterview.completedDate || null,
       id,
       createdDate: new Date(),
     };
@@ -132,8 +158,13 @@ export class MemStorage implements IStorage {
   async createJobDescription(insertJobDescription: InsertJobDescription): Promise<JobDescription> {
     const id = randomUUID();
     const jobDescription: JobDescription = {
-      ...insertJobDescription,
+      title: insertJobDescription.title,
+      description: insertJobDescription.description,
+      requirements: insertJobDescription.requirements || [],
       id,
+      fairnessScore: null,
+      biasIndicators: null,
+      suggestions: null,
       createdDate: new Date(),
     };
     this.jobDescriptions.set(id, jobDescription);

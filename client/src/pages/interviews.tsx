@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, Video, Mail, AlertCircle, TrendingUp, Award } from "lucide-react";
+import { Calendar, Clock, Video, Mail, AlertCircle, TrendingUp, Award, ExternalLink } from "lucide-react";
 import type { Interview, Candidate } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -54,19 +54,77 @@ export default function Interviews() {
     mutationFn: async (data: { candidateId: string; scheduledDate: string }) => {
       return apiRequest("POST", "/api/interviews/schedule", data);
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/interviews"] });
       setScheduleDialogOpen(false);
       setSelectedCandidate("");
       setScheduledDate("");
       toast({
         title: "Success",
-        description: "Interview scheduled and email sent to candidate",
+        description: data.calendarLink ? 
+          "Interview scheduled with Google Calendar event and email sent to candidate" :
+          "Interview scheduled and email sent to candidate",
       });
     },
   });
 
-  const scheduledInterviews = interviews.filter((i) => i.status === "scheduled");
+  const joinInterviewMutation = useMutation({
+    mutationFn: async (interviewId: string) => {
+      const response = await apiRequest("POST", `/api/interviews/${interviewId}/join`);
+      return response;
+    },
+    onSuccess: (data) => {
+      console.log('Join interview response:', data);
+      
+      // Redirect to Google Meet
+      if (data.meetUrl) {
+        window.open(data.meetUrl, '_blank');
+        toast({
+          title: "Interview Joined",
+          description: "Redirected to Google Meet. Interview status updated to in progress.",
+        });
+      } else {
+        toast({
+          title: "Interview Joined",
+          description: "Interview status updated to in progress.",
+        });
+      }
+      
+      // Update interview status
+      queryClient.invalidateQueries({ queryKey: ["/api/interviews"] });
+    },
+    onError: (error) => {
+      console.error('Join interview error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to join interview",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const analyzeInterviewMutation = useMutation({
+    mutationFn: async (interviewId: string) => {
+      return apiRequest("POST", `/api/interviews/${interviewId}/analyze`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/interviews"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/candidates"] });
+      toast({
+        title: "Analysis Complete",
+        description: "AI analysis completed and candidate evaluated",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to complete interview analysis",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const upcomingInterviews = interviews.filter((i) => i.status === "scheduled" || i.status === "in_progress");
   const completedInterviews = interviews.filter((i) => i.status === "completed");
 
   const handleSchedule = () => {
@@ -145,7 +203,7 @@ export default function Interviews() {
         <CardHeader>
           <CardTitle className="text-lg">Upcoming Interviews</CardTitle>
           <CardDescription>
-            {scheduledInterviews.length} interview{scheduledInterviews.length !== 1 ? "s" : ""} scheduled
+            {upcomingInterviews.length} interview{upcomingInterviews.length !== 1 ? "s" : ""} scheduled or in progress
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -155,7 +213,7 @@ export default function Interviews() {
                 <Skeleton key={i} className="h-20 w-full" />
               ))}
             </div>
-          ) : scheduledInterviews.length === 0 ? (
+          ) : upcomingInterviews.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground" data-testid="empty-upcoming-interviews">
               <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
               <p className="text-sm">No upcoming interviews</p>
@@ -163,7 +221,7 @@ export default function Interviews() {
             </div>
           ) : (
             <div className="space-y-3">
-              {scheduledInterviews.map((interview) => (
+              {upcomingInterviews.map((interview) => (
                 <Card
                   key={interview.id}
                   className="hover-elevate transition-all"
@@ -203,15 +261,37 @@ export default function Interviews() {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        {interview.meetingLink && (
+                        {interview.interviewData?.calendarLink && (
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => window.open(interview.meetingLink, "_blank")}
+                            onClick={() => window.open(interview.interviewData.calendarLink, '_blank')}
+                          >
+                            <Calendar className="h-3 w-3 mr-1" />
+                            Calendar
+                          </Button>
+                        )}
+                        {interview.status === "scheduled" && (
+                          <Button
+                            size="sm"
+                            onClick={() => joinInterviewMutation.mutate(interview.id)}
+                            disabled={joinInterviewMutation.isPending}
                             data-testid={`button-join-${interview.id}`}
                           >
                             <Video className="h-3 w-3 mr-1" />
-                            Join
+                            {joinInterviewMutation.isPending ? "Joining..." : "Join"}
+                          </Button>
+                        )}
+                        {interview.status === "in_progress" && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => analyzeInterviewMutation.mutate(interview.id)}
+                            disabled={analyzeInterviewMutation.isPending}
+                            data-testid={`button-analyze-${interview.id}`}
+                          >
+                            <TrendingUp className="h-3 w-3 mr-1" />
+                            {analyzeInterviewMutation.isPending ? "Analyzing..." : "Analyze"}
                           </Button>
                         )}
                       </div>

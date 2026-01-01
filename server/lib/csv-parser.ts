@@ -35,13 +35,13 @@ export function parseCSV(csvContent: string): ParsedCandidate[] {
     const experience = parseInt(candidate.experience || candidate.years || "0", 10) || 0;
 
     candidates.push({
-      name: candidate.name || candidate.full_name || "Unknown",
-      email: candidate.email || "",
-      phone: candidate.phone || candidate.mobile || undefined,
-      position: candidate.position || candidate.role || candidate.job_title || "Not specified",
+      name: candidate.name || candidate.full_name || candidate.fullname || candidate['full name'] || candidate.candidate_name || "Unknown",
+      email: candidate.email || candidate.email_address || candidate['email address'] || "",
+      phone: candidate.phone || candidate.mobile || candidate.contact || candidate.phone_number || undefined,
+      position: candidate.position || candidate.role || candidate.job_title || candidate['job title'] || candidate.title || "Not specified",
       skills,
       experience,
-      education: candidate.education || candidate.degree || undefined,
+      education: candidate.education || candidate.degree || candidate.qualification || undefined,
     });
   }
 

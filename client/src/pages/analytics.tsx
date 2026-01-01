@@ -64,6 +64,28 @@ export default function Analytics() {
     },
   });
 
+  const uploadPdfMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      return apiRequest("POST", "/api/candidates/upload-pdf", formData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/candidates"] });
+      toast({
+        title: "Success",
+        description: "Resume uploaded and processed successfully",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to process PDF resume",
+        variant: "destructive",
+      });
+    },
+  });
+
   const analyzeBiasMutation = useMutation({
     mutationFn: async (description: string) => {
       return apiRequest("POST", "/api/job-descriptions/analyze-bias", { description });
@@ -81,7 +103,17 @@ export default function Analytics() {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      uploadCsvMutation.mutate(file);
+      if (file.type === 'application/pdf') {
+        uploadPdfMutation.mutate(file);
+      } else if (file.name.endsWith('.csv')) {
+        uploadCsvMutation.mutate(file);
+      } else {
+        toast({
+          title: "Error",
+          description: "Please upload a CSV or PDF file",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -146,35 +178,35 @@ export default function Analytics() {
         </p>
       </div>
 
-      {/* CSV Upload Section */}
+      {/* File Upload Section */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Upload Candidate Data</CardTitle>
           <CardDescription>
-            Upload a CSV file with candidate information for AI-powered analysis
+            Upload CSV files for bulk import or PDF resumes for individual candidates
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg hover-elevate transition-all">
             <FileSpreadsheet className="h-12 w-12 text-muted-foreground mb-3" />
             <p className="text-sm font-medium mb-2">
-              {uploadCsvMutation.isPending ? "Uploading..." : "Drag and drop or click to upload"}
+              {uploadCsvMutation.isPending || uploadPdfMutation.isPending ? "Uploading..." : "Drag and drop or click to upload"}
             </p>
-            <p className="text-xs text-muted-foreground mb-4">CSV files only</p>
+            <p className="text-xs text-muted-foreground mb-4">CSV files for bulk import or PDF resumes</p>
             <input
               type="file"
-              accept=".csv"
+              accept=".csv,.pdf"
               onChange={handleFileUpload}
               className="hidden"
-              id="csv-upload"
-              data-testid="input-csv-upload"
-              disabled={uploadCsvMutation.isPending}
+              id="file-upload"
+              data-testid="input-file-upload"
+              disabled={uploadCsvMutation.isPending || uploadPdfMutation.isPending}
             />
-            <label htmlFor="csv-upload">
-              <Button asChild disabled={uploadCsvMutation.isPending} data-testid="button-upload-csv">
+            <label htmlFor="file-upload">
+              <Button asChild disabled={uploadCsvMutation.isPending || uploadPdfMutation.isPending} data-testid="button-upload-file">
                 <span>
                   <Upload className="h-4 w-4 mr-2" />
-                  Select CSV File
+                  Select File
                 </span>
               </Button>
             </label>

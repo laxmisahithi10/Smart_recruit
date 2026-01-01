@@ -65,30 +65,30 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+    <div className="space-y-8">
+      <div className="pb-2">
+        <h1 className="text-3xl font-bold text-foreground tracking-tight">Dashboard</h1>
+        <p className="text-muted-foreground mt-2 text-base">
           Welcome back! Here's your recruitment overview.
         </p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat) => (
-          <Card key={stat.title} className="hover-elevate transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+          <Card key={stat.title} className="hover-elevate transition-all duration-300 border-0 shadow-sm hover:shadow-md">
+            <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground tracking-wide uppercase">
                 {stat.title}
               </CardTitle>
-              <div className={`p-2 rounded-md ${stat.bgColor}`}>
-                <stat.icon className={`h-4 w-4 ${stat.color}`} />
+              <div className={`p-3 rounded-xl ${stat.bgColor} shadow-sm`}>
+                <stat.icon className={`h-5 w-5 ${stat.color}`} />
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold font-mono" data-testid={stat.testId}>
+            <CardContent className="pt-0">
+              <div className="text-4xl font-bold font-mono tracking-tight" data-testid={stat.testId}>
                 {loadingCandidates || loadingInterviews ? (
-                  <Skeleton className="h-9 w-16" />
+                  <Skeleton className="h-10 w-20" />
                 ) : (
                   stat.value
                 )}
@@ -99,13 +99,13 @@ export default function Dashboard() {
       </div>
 
       {/* Recent Activity Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Recent Candidates */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between gap-2">
-            <CardTitle className="text-lg">Recent Candidates</CardTitle>
+        <Card className="border-0 shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between gap-2 pb-4">
+            <CardTitle className="text-xl font-semibold">Recent Candidates</CardTitle>
             <Link href="/candidates">
-              <Button variant="ghost" size="sm" data-testid="button-view-all-candidates">
+              <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80" data-testid="button-view-all-candidates">
                 View All
               </Button>
             </Link>
@@ -128,17 +128,17 @@ export default function Dashboard() {
                 {recentCandidates.map((candidate) => (
                   <div
                     key={candidate.id}
-                    className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover-elevate"
+                    className="flex items-center justify-between p-4 rounded-xl bg-muted/30 hover-elevate transition-all duration-200 border border-border/50"
                     data-testid={`candidate-${candidate.id}`}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-sm font-semibold text-primary">
+                    <div className="flex items-center gap-4">
+                      <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-primary/20">
+                        <span className="text-base font-semibold text-primary">
                           {candidate.name.charAt(0)}
                         </span>
                       </div>
                       <div>
-                        <p className="text-sm font-medium">{candidate.name}</p>
+                        <p className="text-sm font-semibold">{candidate.name}</p>
                         <p className="text-xs text-muted-foreground">{candidate.position}</p>
                       </div>
                     </div>
@@ -159,11 +159,11 @@ export default function Dashboard() {
         </Card>
 
         {/* Upcoming Interviews */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between gap-2">
-            <CardTitle className="text-lg">Upcoming Interviews</CardTitle>
+        <Card className="border-0 shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between gap-2 pb-4">
+            <CardTitle className="text-xl font-semibold">Upcoming Interviews</CardTitle>
             <Link href="/interviews">
-              <Button variant="ghost" size="sm" data-testid="button-view-all-interviews">
+              <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80" data-testid="button-view-all-interviews">
                 View All
               </Button>
             </Link>
@@ -186,11 +186,11 @@ export default function Dashboard() {
                 {upcomingInterviewsList.map((interview) => (
                   <div
                     key={interview.id}
-                    className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover-elevate"
+                    className="flex items-center justify-between p-4 rounded-xl bg-muted/30 hover-elevate transition-all duration-200 border border-border/50"
                     data-testid={`interview-${interview.id}`}
                   >
                     <div>
-                      <p className="text-sm font-medium">{interview.candidateName}</p>
+                      <p className="text-sm font-semibold">{interview.candidateName}</p>
                       <p className="text-xs text-muted-foreground">{interview.position}</p>
                     </div>
                     <div className="text-right">

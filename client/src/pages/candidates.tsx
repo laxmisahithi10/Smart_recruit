@@ -38,23 +38,23 @@ export default function Candidates() {
   const statuses = ["all", "applied", "shortlisted", "interviewed", "rejected", "hired"];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">Candidates</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+    <div className="space-y-8">
+      <div className="pb-2">
+        <h1 className="text-3xl font-bold text-foreground tracking-tight">Candidates</h1>
+        <p className="text-muted-foreground mt-2 text-base">
           Manage and review all candidate applications
         </p>
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card className="border-0 shadow-sm">
         <CardContent className="pt-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search by name, email, or position..."
-                className="pl-9"
+                className="pl-9 h-11 border-border/50 focus:border-primary/50 transition-colors"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 data-testid="input-search-candidates"
@@ -68,7 +68,7 @@ export default function Candidates() {
                   size="sm"
                   onClick={() => setFilterStatus(status)}
                   data-testid={`button-filter-${status}`}
-                  className="capitalize"
+                  className="capitalize h-11 px-4 font-medium transition-all duration-200"
                 >
                   {status}
                 </Button>
@@ -100,36 +100,36 @@ export default function Candidates() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCandidates.map((candidate) => (
             <Card
               key={candidate.id}
-              className="hover-elevate transition-all duration-200"
+              className="hover-elevate transition-all duration-300 border-0 shadow-sm hover:shadow-md"
               data-testid={`card-candidate-${candidate.id}`}
             >
-              <CardHeader>
+              <CardHeader className="pb-4">
                 <div className="flex items-start justify-between gap-2">
-                  <div className="flex items-center gap-3">
-                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-lg font-semibold text-primary">
+                  <div className="flex items-center gap-4">
+                    <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-primary/20">
+                      <span className="text-lg font-bold text-primary">
                         {candidate.name.charAt(0)}
                       </span>
                     </div>
                     <div>
-                      <CardTitle className="text-base" data-testid={`text-name-${candidate.id}`}>
+                      <CardTitle className="text-lg font-semibold" data-testid={`text-name-${candidate.id}`}>
                         {candidate.name}
                       </CardTitle>
-                      <p className="text-xs text-muted-foreground">{candidate.email}</p>
+                      <p className="text-sm text-muted-foreground">{candidate.email}</p>
                     </div>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-5 pt-0">
                 <div>
-                  <p className="text-sm font-medium text-foreground">
+                  <p className="text-base font-semibold text-foreground">
                     {candidate.position}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-sm text-muted-foreground mt-1">
                     {candidate.experience} years experience
                   </p>
                 </div>
@@ -154,8 +154,8 @@ export default function Candidates() {
                   </div>
                 )}
 
-                <div className="flex items-center justify-between pt-2 border-t">
-                  <Badge className={`${statusColors[candidate.status]} no-default-hover-elevate`}>
+                <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                  <Badge className={`${statusColors[candidate.status]} no-default-hover-elevate px-3 py-1 font-medium`}>
                     {candidate.status}
                   </Badge>
                   {candidate.overallScore !== null && candidate.overallScore !== undefined && (

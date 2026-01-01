@@ -3,83 +3,68 @@
 @tailwind utilities;
 
 /* LIGHT MODE */
+/* LIGHT MODE */
 :root {
-  --button-outline: rgba(0,0,0, .10);
-  --badge-outline: rgba(0,0,0, .05);
+  /* Main Background & Text */
+  --background: 210 40% 98%; /* Cleaner, more professional background */
+  --foreground: 222 47% 15%; /* Darker, more readable text */
 
-  /* Automatic computation of border around primary / danger buttons */
-  --opaque-button-border-intensity: -8; /* In terms of percentages */
+  /* Cards (the white boxes) */
+  --card: 0 0% 100%; /* Pure white for cards */
+  --card-foreground: 222 47% 15%; /* Darker text on cards */
+  --card-border: 214 32% 88%; /* Subtle border */
 
-  /* Backgrounds applied on top of other backgrounds when hovered/active */
-  --elevate-1: rgba(0,0,0, .03);
-  --elevate-2: rgba(0,0,0, .08);
+  /* Sidebar */
+  --sidebar: 210 40% 99%; /* Clean white sidebar */
+  --sidebar-foreground: 222 47% 15%; /* Darker text in sidebar */
+  --sidebar-primary: 221 83% 53%; /* Professional blue for active items */
+  --sidebar-primary-foreground: 0 0% 100%; /* White text on active items */
+  --sidebar-accent: 210 40% 94%; /* Subtle hover color */
+  --sidebar-accent-foreground: 222 47% 15%;
+  --sidebar-border: 214 32% 88%;
+  --sidebar-ring: 221 83% 53%;
 
-  --background: 0 0% 98%;
+  /* Primary Buttons & Actions */
+  --primary: 221 83% 50%; /* Professional blue */
+  --primary-foreground: 0 0% 100%; /* Pure white for text on buttons */
+  
+  /* Secondary Buttons & elements */
+  --secondary: 210 40% 95%; /* Lighter secondary */
+  --secondary-foreground: 222 47% 15%; /* Darker text */
 
-  --foreground: 222 47% 11%;
+  /* Muted Text (less important text) */
+  --muted: 210 40% 94%; /* Cleaner muted background */
+  --muted-foreground: 215 20% 40%; /* Better contrast for muted text */
 
-  --border: 220 13% 91%;
-
-  --card: 0 0% 100%;
-
-  --card-foreground: 222 47% 11%;
-
-  --card-border: 220 13% 88%;
-
-  --sidebar: 0 0% 96%;
-
-  --sidebar-foreground: 222 47% 11%;
-
-  --sidebar-border: 220 13% 85%;
-
-  --sidebar-primary: 236 72% 16%;
-
-  --sidebar-primary-foreground: 0 0% 98%;
-
-  --sidebar-accent: 215 20% 88%;
-
-  --sidebar-accent-foreground: 222 47% 11%;
-
-  --sidebar-ring: 236 72% 16%;
-
+  /* Other Standard Elements */
+  --border: 214 32% 88%; /* Cleaner borders */
+  --input: 214 32% 88%; /* Consistent input styling */
+  --ring: 221 83% 50%; /* Professional focus ring */
   --popover: 0 0% 100%;
-
-  --popover-foreground: 222 47% 11%;
-
+  --popover-foreground: 222 47% 21%;
   --popover-border: 220 13% 88%;
 
-  --primary: 236 72% 16%;
-
-  --primary-foreground: 0 0% 98%;
-
-  --secondary: 215 20% 92%;
-
-  --secondary-foreground: 222 47% 11%;
-
-  --muted: 215 16% 90%;
-
-  --muted-foreground: 215 16% 47%;
-
-  --accent: 142 76% 36%;
-
-  --accent-foreground: 0 0% 98%;
-
+  /* Destructive (delete buttons, etc.) */
   --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
 
-  --destructive-foreground: 0 0% 98%;
-
-  --input: 220 13% 80%;
-  --ring: 236 72% 16%;
-  --chart-1: 236 72% 16%;
+  /* --- You can leave the rest of the variables below as they are --- */
+  --button-outline: rgba(0,0,0, .10);
+  --badge-outline: rgba(0,0,0, .05);
+  --opaque-button-border-intensity: -8;
+  --elevate-1: rgba(0,0,0, .03);
+  --elevate-2: rgba(0,0,0, .08);
+  --accent: 142 76% 36%;
+  --accent-foreground: 0 0% 98%;
+  --chart-1: 221 83% 53%;
   --chart-2: 142 76% 36%;
   --chart-3: 25 95% 53%;
   --chart-4: 217 91% 60%;
   --chart-5: 0 84% 60%;
-
+  --radius: .5rem;
   --font-sans: Inter, system-ui, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: JetBrains Mono, Menlo, monospace;
-  --radius: .5rem; /* 8px */
   --shadow-2xs: 0px 1px 2px 0px hsl(220 13% 20% / 0.05);
   --shadow-xs: 0px 1px 3px 0px hsl(220 13% 20% / 0.08);
   --shadow-sm: 0px 2px 4px 0px hsl(220 13% 20% / 0.06), 0px 1px 2px -1px hsl(220 13% 20% / 0.04);
@@ -90,35 +75,12 @@
   --shadow-2xl: 0px 20px 40px 0px hsl(220 13% 20% / 0.16);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
-
-  /* Automatically computed borders - intensity can be controlled by the user by the --opaque-button-border-intensity setting */
-
-  /* Fallback for older browsers */
-  --sidebar-primary-border: hsl(var(--sidebar-primary));
   --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-
-  /* Fallback for older browsers */
-  --sidebar-accent-border: hsl(var(--sidebar-accent));
   --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-
-  /* Fallback for older browsers */
-  --primary-border: hsl(var(--primary));
   --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-
-  /* Fallback for older browsers */
-  --secondary-border: hsl(var(--secondary));
   --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-
-  /* Fallback for older browsers */
-  --muted-border: hsl(var(--muted));
   --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-
-  /* Fallback for older browsers */
-  --accent-border: hsl(var(--accent));
   --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-
-  /* Fallback for older browsers */
-  --destructive-border: hsl(var(--destructive));
   --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
@@ -220,6 +182,24 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    letter-spacing: -0.01em; /* Tighter letter spacing for professional look */
+  }
+
+  /* Professional heading styles */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
+    letter-spacing: -0.02em;
+  }
+
+  /* Enhanced card styling */
+  .card {
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    border: 1px solid hsl(var(--card-border));
+  }
+
+  /* Professional button enhancements */
+  .btn-primary {
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   }
 }
 

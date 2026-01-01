@@ -47,31 +47,31 @@ export function AIChatbot() {
         {!isOpen && (
           <Button
             size="icon"
-            className="h-16 w-16 rounded-full bg-gradient-to-br from-primary to-accent shadow-lg hover:shadow-xl transition-all duration-300 animate-[float_3s_ease-in-out_infinite]"
+            className="h-16 w-16 rounded-full bg-gradient-to-br from-primary via-primary to-primary/90 shadow-lg hover:shadow-xl transition-all duration-300 animate-[float_3s_ease-in-out_infinite] border-0"
             onClick={() => setIsOpen(true)}
             data-testid="button-open-chatbot"
           >
-            <MessageSquare className="h-8 w-8" />
+            <MessageSquare className="h-7 w-7" />
           </Button>
         )}
       </div>
 
       {/* Chat Panel */}
       {isOpen && (
-        <Card className="fixed bottom-6 right-6 z-50 w-[400px] h-[600px] flex flex-col shadow-2xl">
+        <Card className="fixed bottom-6 right-6 z-50 w-[420px] h-[650px] flex flex-col shadow-2xl border-0 bg-card">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b">
-            <div className="flex items-center gap-3">
-              <Avatar className="h-10 w-10 bg-gradient-to-br from-primary to-accent">
-                <AvatarFallback className="text-primary-foreground font-semibold">
+          <div className="flex items-center justify-between p-6 border-b border-border/50 bg-gradient-to-r from-primary/5 to-primary/10">
+            <div className="flex items-center gap-4">
+              <Avatar className="h-12 w-12 bg-gradient-to-br from-primary to-primary/90 shadow-sm">
+                <AvatarFallback className="text-primary-foreground font-bold text-base">
                   AI
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h3 className="text-sm font-semibold" data-testid="text-chatbot-title">
+                <h3 className="text-base font-bold" data-testid="text-chatbot-title">
                   AI Assistant
                 </h3>
-                <p className="text-xs text-muted-foreground">Always here to help</p>
+                <p className="text-sm text-muted-foreground font-medium">Always here to help</p>
               </div>
             </div>
             <Button
@@ -79,19 +79,20 @@ export function AIChatbot() {
               size="icon"
               onClick={() => setIsOpen(false)}
               data-testid="button-close-chatbot"
+              className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive transition-colors"
             >
               <X className="h-4 w-4" />
             </Button>
           </div>
 
           {/* Messages */}
-          <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+          <ScrollArea className="flex-1 p-6" ref={scrollRef}>
             <div className="space-y-4">
               {messages.length === 0 && (
-                <div className="text-center py-8 text-muted-foreground" data-testid="text-chatbot-empty">
-                  <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                  <p className="text-sm">Start a conversation with your AI assistant</p>
-                  <p className="text-xs mt-1">Ask me to schedule interviews, analyze candidates, or anything else!</p>
+                <div className="text-center py-12 text-muted-foreground" data-testid="text-chatbot-empty">
+                  <MessageSquare className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                  <p className="text-base font-medium">Start a conversation with your AI assistant</p>
+                  <p className="text-sm mt-2">Ask me to schedule interviews, analyze candidates, or anything else!</p>
                 </div>
               )}
               {messages.map((msg) => (
@@ -102,21 +103,21 @@ export function AIChatbot() {
                   }`}
                   data-testid={`message-${msg.role}`}
                 >
-                  <Avatar className={`h-8 w-8 ${
-                    msg.role === "assistant" ? "bg-gradient-to-br from-primary to-accent" : "bg-secondary"
+                  <Avatar className={`h-10 w-10 ${
+                    msg.role === "assistant" ? "bg-gradient-to-br from-primary to-primary/90 shadow-sm" : "bg-secondary"
                   }`}>
-                    <AvatarFallback className={msg.role === "assistant" ? "text-primary-foreground" : ""}>
+                    <AvatarFallback className={msg.role === "assistant" ? "text-primary-foreground font-semibold" : "font-semibold"}>
                       {msg.role === "user" ? "U" : "AI"}
                     </AvatarFallback>
                   </Avatar>
                   <div
-                    className={`px-3 py-2 rounded-lg max-w-[80%] ${
+                    className={`px-4 py-3 rounded-2xl max-w-[80%] shadow-sm ${
                       msg.role === "user"
                         ? "bg-primary text-primary-foreground"
-                        : "bg-secondary text-secondary-foreground"
+                        : "bg-secondary text-secondary-foreground border border-border/50"
                     }`}
                   >
-                    <p className="text-sm">{msg.content}</p>
+                    <p className="text-sm leading-relaxed">{msg.content}</p>
                   </div>
                 </div>
               ))}
@@ -138,13 +139,13 @@ export function AIChatbot() {
           </ScrollArea>
 
           {/* Input */}
-          <div className="p-4 border-t">
+          <div className="p-6 border-t border-border/50 bg-muted/20">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSend();
               }}
-              className="flex gap-2"
+              className="flex gap-3"
             >
               <Input
                 placeholder="Ask me anything..."
@@ -152,12 +153,14 @@ export function AIChatbot() {
                 onChange={(e) => setMessage(e.target.value)}
                 disabled={sendMessageMutation.isPending}
                 data-testid="input-chat-message"
+                className="flex-1 h-11 border-border/50 focus:border-primary/50 transition-colors"
               />
               <Button
                 type="button"
                 size="icon"
                 variant="ghost"
                 data-testid="button-voice-input"
+                className="h-11 w-11 hover:bg-primary/10 hover:text-primary transition-colors"
               >
                 <Mic className="h-4 w-4" />
               </Button>
@@ -166,6 +169,7 @@ export function AIChatbot() {
                 size="icon"
                 disabled={!message.trim() || sendMessageMutation.isPending}
                 data-testid="button-send-message"
+                className="h-11 w-11 shadow-sm"
               >
                 <Send className="h-4 w-4" />
               </Button>
